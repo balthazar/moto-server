@@ -1,0 +1,16 @@
+{
+  "name": "gps-track",
+  "version": "0.0.0",
+  "description": "",
+  "scripts": {
+    "server": "node -r dotenv/config server",
+    "client": "node -r dotenv/config client"
+  },
+  "dependencies": {
+    "dotenv": "^7.0.0",
+    "node-gpsd": "^0.3.0",
+    "prettier": "^1.17.0",
+    "reconnecting-websocket": "^4.1.10",
+    "ws": "^6.2.1"
+  }
+}
