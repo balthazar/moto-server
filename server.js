@@ -1,4 +1,11 @@
+const low = require('lowdb')
+const FileSync = require('lowdb/adapters/FileSync')
 const WebSocket = require('ws')
+
+const adapter = new FileSync('db.json')
+const db = low(adapter)
+
+db.defaults({ traces: [], last: {} }).write()
 
 const port = 4040
 const wss = new WebSocket.Server({ port })
@@ -22,7 +29,11 @@ wss.on('connection', socket => {
         return
       }
 
-      console.log(data)
+      const paylaod = { time: Date.now(), ...data }
+
+      db.set('last', payload)
+      db.get('traces').push(payload)
+      db.write()
     } catch (err) {
       console.log('[GPS-TRACK] Error', err)
     }
