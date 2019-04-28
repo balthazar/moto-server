@@ -31,8 +31,10 @@ wss.on('connection', socket => {
 
       const payload = { time: Date.now(), ...data }
 
-      db.set('last', payload)
-      db.get('traces').push(payload)
+      db.set('last', payload).value()
+      db.get('traces')
+        .push(payload)
+        .value()
       db.write()
     } catch (err) {
       console.log('[GPS-TRACK] Error', err)
