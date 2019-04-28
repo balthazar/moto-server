@@ -4,7 +4,6 @@ const gpsd = require('node-gpsd')
 
 const socket = new ReconnectingWebSocket('ws://localhost:4040', null, {
   WebSocket: ws,
-  debug: true,
   reconnectInterval: 3000,
 })
 
@@ -19,6 +18,8 @@ const daemon = new gpsd.Daemon({
 
 daemon.start(() => {
   const listener = new gpsd.Listener()
+
+  socket.send(JSON.stringify({ type: 'auth', code: process.env.ACCESS_KEY }))
 
   listener.on('TPV', data => {
     const { lat, lon, alt, speed, climb } = data
