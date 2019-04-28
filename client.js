@@ -23,6 +23,10 @@ daemon.start(() => {
 
   listener.on('TPV', data => {
     const { lat, lon, alt, speed, climb } = data
+    if (!lat || !lon) {
+      return
+    }
+
     socket.send(JSON.stringify({ lat, lon, alt, speed, climb }))
   })
 
