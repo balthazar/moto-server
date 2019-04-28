@@ -28,11 +28,6 @@ daemon.start(() => {
 
   listener.connect(() => {
     console.log('[Connected]')
-
-    setInterval(() => {
-      socket.send(JSON.stringify({ lat: 10, lon: 1, alt: 11, speed: 0, climb: 0 }))
-    }, 2e3)
-
     listener.watch()
   })
 })
