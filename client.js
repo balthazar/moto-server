@@ -2,7 +2,7 @@ const ws = require('ws')
 const ReconnectingWebSocket = require('reconnecting-websocket')
 const gpsd = require('node-gpsd')
 
-const socket = new ReconnectingWebSocket('ws://localhost:4040', null, {
+const socket = new ReconnectingWebSocket('ws://balthazargronon.com:4040', null, {
   WebSocket: ws,
   reconnectInterval: 3000,
 })
