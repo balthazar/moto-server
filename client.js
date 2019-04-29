@@ -4,6 +4,7 @@ const gpsd = require('node-gpsd')
 
 const socket = new ReconnectingWebSocket('ws://balthazargronon.com:4040', null, {
   WebSocket: ws,
+  debug: true,
   reconnectInterval: 3000,
 })
 
@@ -27,7 +28,7 @@ daemon.start(() => {
       return
     }
 
-    socket.send(JSON.stringify({ lat, lon, alt, speed, climb }))
+    socket.send(JSON.stringify({ time: Date.now(), lat, lon, alt, speed, climb }))
   })
 
   listener.connect(() => {

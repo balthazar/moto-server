@@ -29,11 +29,9 @@ wss.on('connection', socket => {
         return
       }
 
-      const payload = { time: Date.now(), ...data }
-
-      db.set('last', payload).value()
+      db.set('last', data).value()
       db.get('traces')
-        .push(payload)
+        .push(data)
         .value()
       db.write()
     } catch (err) {
