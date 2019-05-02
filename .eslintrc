@@ -1,0 +1,5 @@
+{
+  "extends": ["zavatta", "zavatta-react", "prettier", "prettier/react"],
+  "parser": "babel-eslint"
+}
+
