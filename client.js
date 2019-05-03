@@ -25,16 +25,16 @@ daemon.start(() => {
   const listener = new gpsd.Listener()
 
   listener.on('TPV', data => {
-    const { lat, lon, alt, speed, climb, ecefpAcc } = data
+    const { lat, lon, alt, speed, climb, ecefpAcc: accuracy } = data
     if (!lat || !lon) {
       return
     }
 
-    if (ecefpAcc > 100) {
+    if (accuracy > 100) {
       return console.log('[Ignoring inaccurate point]')
     }
 
-    socket.send(JSON.stringify({ time: Date.now(), lat, lon, alt, speed, climb }))
+    socket.send(JSON.stringify({ time: Date.now(), lat, lon, alt, speed, climb, accuracy }))
   })
 
   listener.connect(() => {
