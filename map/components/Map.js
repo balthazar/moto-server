@@ -132,7 +132,7 @@ class Map extends Component {
           opacity: 0.8,
           stroked: true,
           filled: true,
-          radiusScale: 1,
+          radiusScale: 3,
           radiusMinPixels: 1,
           radiusMaxPixels: 100,
           lineWidthMinPixels: 1,

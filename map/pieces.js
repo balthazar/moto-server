@@ -22,7 +22,12 @@ export default {
     },
     {
       gt: 25,
+      lte: 50,
       color: '#378000',
+    },
+    {
+      gt: 50,
+      color: '#1ac7ff',
     },
   ],
 }

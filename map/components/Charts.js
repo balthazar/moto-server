@@ -56,7 +56,10 @@ class Charts extends Component {
             height: CHART_HEIGHT - 20,
             tooltip: {
               trigger: 'axis',
-              position: (point, params) => [point[0], params[0].value > 20 ? '50%' : '5%'],
+              position: (point, params) => [
+                point[0] > 250 ? point[0] - 150 : point[0] + 10,
+                params[0].value > 20 ? '50%' : '5%',
+              ],
               formatter: params =>
                 this.changeHover(params[0].dataIndex, params[0].color) ||
                 `
