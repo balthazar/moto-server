@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
 
 import Map from './components/Map'
-import Charts from './components/Charts'
+import Panel from './components/Panel'
 
 import createStore from './store'
 
@@ -14,7 +14,7 @@ class App extends Component {
     return (
       <React.Fragment>
         <Map />
-        <Charts />
+        <Panel />
       </React.Fragment>
     )
   }

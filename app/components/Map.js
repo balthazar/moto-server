@@ -9,55 +9,32 @@ import imm from 'object-path-immutable'
 import MultiColorPathLayer from './multi-color-path-layer'
 
 import pieces from '../pieces'
-import config from '../config'
-import { setPaths } from '../reducers/map'
+import { setPaths, changeHovered } from '../reducers/map'
 
 import data from '../../db.json'
 
 const INITIAL_VIEW_STATE = {
   latitude: 37.787689153,
   longitude: -122.414607454,
-  zoom: 15,
+  zoom: 14,
 }
 
 const hexToRgb = hex =>
   hex
-    .replace(/^#?([a-f\d])([a-f\d])([a-f\d])$/i, (m, r, g, b) => '#' + r + r + g + g + b + b)
+    .replace(/^#?([a-f\d])([a-f\d])([a-f\d])$/i, (m, r, g, b) => `#${r + r + g + g + b + b}`)
     .substring(1)
     .match(/.{2}/g)
     .map(x => parseInt(x, 16))
 
-const getSpeedColor = value => {
-  for (let i = 0; i < pieces[config.colorBy].length; ++i) {
-    const { lte, color } = pieces[config.colorBy][i]
+const getColor = (value, colorBy) => {
+  for (let i = 0; i < pieces[colorBy].length; ++i) {
+    const { lte, color } = pieces[colorBy][i]
     if (value <= lte) {
       return color
     }
   }
 
-  return pieces[config.colorBy][pieces[config.colorBy].length - 1].color
-}
-
-const getAltitudeColor = value => {
-  if (value < 30) {
-    return [255, 130, 68]
-  }
-  if (value < 50) {
-    return [255, 182, 0]
-  }
-  if (value < 75) {
-    return [213, 213, 0]
-  }
-  if (value < 100) {
-    return [126, 170, 0]
-  }
-
-  return [55, 128, 0]
-}
-
-const colorsFn = {
-  speed: getSpeedColor,
-  alt: getAltitudeColor,
+  return pieces[colorBy][pieces[colorBy].length - 1].color
 }
 
 const getDistance = (a, b) => {
@@ -66,9 +43,7 @@ const getDistance = (a, b) => {
   return turf.distance(from, to, { units: 'meters' })
 }
 
-const createPaths = () => {
-  const getColor = v => hexToRgb(colorsFn[config.colorBy](v))
-
+const createPaths = colorBy => {
   const trips = data.traces.reduce((acc, cur, i) => {
     const { lat, lon, time } = cur
 
@@ -77,7 +52,7 @@ const createPaths = () => {
       speed: (2.2369 * cur.speed).toFixed(0),
     }
 
-    const color = getColor(payload[config.colorBy])
+    const color = hexToRgb(getColor(payload[colorBy], colorBy))
 
     const prev = i > 0 && data.traces[i - 1]
 
@@ -103,11 +78,41 @@ const createPaths = () => {
 
 class Map extends Component {
   componentWillMount() {
-    this.props.setPaths(createPaths())
+    const { colorBy } = this.props
+    this.props.setPaths(createPaths(colorBy))
+  }
+
+  componentWillUpdate(nextProps) {
+    if (nextProps.colorBy !== this.props.colorBy) {
+      this.props.setPaths(createPaths(nextProps.colorBy))
+    }
   }
 
   render() {
-    const { paths, hovered } = this.props
+    const { paths, hovered, colorBy } = this.props
+
+    const onHover = info => {
+      if (!info.object) {
+        return this.props.changeHovered(null)
+      }
+
+      const pathIndex = info.index || hovered.pathIndex
+      const { data } = paths[pathIndex].data.reduce(
+        (acc, cur) => {
+          const distance = getDistance(info.coordinate, [cur.lon, cur.lat])
+
+          if (!acc.data || distance < acc.distance) {
+            return { distance, data: cur }
+          }
+
+          return acc
+        },
+        { data: null, distance: -1 },
+      )
+
+      const color = getColor(data[colorBy], colorBy)
+      this.props.changeHovered({ coords: [data.lon, data.lat], color, pathIndex })
+    }
 
     const layers = [
       new MultiColorPathLayer({
@@ -119,9 +124,7 @@ class Map extends Component {
         getPath: d => d.path,
         getColor: d => d.color,
         getWidth: d => 5,
-        onHover: ({ object, x, y }) => {
-          console.log(object)
-        },
+        onHover,
       }),
 
       hovered &&
@@ -130,21 +133,28 @@ class Map extends Component {
           data: [hovered],
           pickable: true,
           opacity: 0.8,
-          stroked: true,
+          stroked: false,
           filled: true,
           radiusScale: 3,
           radiusMinPixels: 1,
           radiusMaxPixels: 100,
           lineWidthMinPixels: 1,
           getPosition: d => d.coords,
-          getRadius: d => 20,
+          getRadius: d => 10,
           getFillColor: d => hexToRgb(d.color),
           getLineColor: d => [0, 0, 0],
+          onHover,
         }),
     ].filter(f => f)
 
     return (
-      <DeckGL initialViewState={INITIAL_VIEW_STATE} controller layers={layers}>
+      <DeckGL
+        ref={c => (this.deckGL = c)}
+        initialViewState={INITIAL_VIEW_STATE}
+        controller
+        pickingRadius={30}
+        layers={layers}
+      >
         <StaticMap
           mapboxApiAccessToken={process.env.MapboxAccessToken}
           mapStyle="mapbox://styles/mapbox/dark-v10"
@@ -155,6 +165,6 @@ class Map extends Component {
 }
 
 export default connect(
-  ({ map: { hovered, paths } }) => ({ hovered, paths }),
-  { setPaths },
+  ({ map: { hovered, paths }, config: { colorBy } }) => ({ hovered, paths, colorBy }),
+  { setPaths, changeHovered },
 )(Map)

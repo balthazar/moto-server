@@ -3,6 +3,7 @@ import ReactEchartsCore from 'echarts-for-react/lib/core'
 import { DateTime } from 'luxon'
 import styled from 'styled-components'
 import { connect } from 'react-redux'
+import capitalize from 'lodash/capitalize'
 
 import echarts from 'echarts/lib/echarts'
 import 'echarts/lib/chart/line'
@@ -11,12 +12,12 @@ import 'echarts/lib/component/tooltip'
 import 'echarts/lib/component/visualMap'
 
 import pieces from '../pieces'
-import config from '../config'
 import { changeHovered } from '../reducers/map'
+import { switchColorBy } from '../reducers/config'
 
 const CHART_HEIGHT = 220
 
-const ChartContainer = styled.div`
+const Container = styled.div`
   min-width: 500px;
   height: ${CHART_HEIGHT}px;
   position: absolute;
@@ -27,7 +28,11 @@ const ChartContainer = styled.div`
   overflow: hidden;
 `
 
-class Charts extends Component {
+const Tools = styled.div`
+  margin-bottom: 10px;
+`
+
+class Panel extends Component {
   constructor(props) {
     super(props)
     this.removeHover = this.removeHover.bind(this)
@@ -45,15 +50,18 @@ class Charts extends Component {
   }
 
   render() {
-    const { paths } = this.props
+    const { paths, colorBy, switchColorBy } = this.props
 
     return (
-      <ChartContainer onMouseLeave={this.removeHover}>
+      <Container onMouseLeave={this.removeHover}>
+        <Tools>
+          <button onClick={switchColorBy}>switch mode</button>
+        </Tools>
         <ReactEchartsCore
           echarts={echarts}
           ref={e => (this._chart = e)}
           option={{
-            height: CHART_HEIGHT - 20,
+            height: CHART_HEIGHT - 40,
             tooltip: {
               trigger: 'axis',
               position: (point, params) => [
@@ -80,7 +88,8 @@ class Charts extends Component {
             grid: {
               bottom: 20,
               top: 10,
-              left: 20,
+              left: 30,
+              right: 90,
             },
             xAxis: {
               data: paths[paths.length - 1].data.map(d => d.time),
@@ -105,30 +114,30 @@ class Charts extends Component {
             },
             visualMap: {
               top: 10,
-              right: 10,
+              right: 0,
               textStyle: {
                 color: '#646464',
               },
-              pieces: pieces[config.colorBy],
+              pieces: pieces[colorBy],
               outOfRange: {
                 color: '#999',
               },
             },
             series: {
-              name: 'Speed',
+              name: capitalize(colorBy),
               type: 'line',
-              data: paths[paths.length - 1].data.map(d => d.speed),
+              data: paths[paths.length - 1].data.map(d => d[colorBy]),
             },
           }}
           notMerge
           lazyUpdate
         />
-      </ChartContainer>
+      </Container>
     )
   }
 }
 
 export default connect(
-  ({ map: { paths } }) => ({ paths }),
-  { changeHovered },
-)(Charts)
+  ({ map: { paths }, config: { colorBy } }) => ({ paths, colorBy }),
+  { changeHovered, switchColorBy },
+)(Panel)
