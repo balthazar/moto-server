@@ -4,7 +4,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 module.exports = {
   entry: {
-    app: './map/index.js',
+    app: './app/index.js',
   },
 
   devtool: 'source-map',
@@ -30,6 +30,6 @@ module.exports = {
 
   plugins: [
     new webpack.EnvironmentPlugin(['MapboxAccessToken']),
-    new HtmlWebpackPlugin({ template: 'map/index.html' }),
+    new HtmlWebpackPlugin({ template: 'app/index.html' }),
   ],
 }
