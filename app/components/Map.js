@@ -96,7 +96,11 @@ class Map extends Component {
         return this.props.changeHovered(null)
       }
 
-      const pathIndex = info.index || hovered.pathIndex
+      const pathIndex = info.index || (hovered && hovered.pathIndex)
+      if (!pathIndex) {
+        return
+      }
+
       const { data } = paths[pathIndex].data.reduce(
         (acc, cur) => {
           const distance = getDistance(info.coordinate, [cur.lon, cur.lat])
@@ -111,7 +115,11 @@ class Map extends Component {
       )
 
       const color = getColor(data[colorBy], colorBy)
-      this.props.changeHovered({ coords: [data.lon, data.lat], color, pathIndex })
+      this.props.changeHovered({
+        coords: [data.lon, data.lat],
+        color,
+        pathIndex,
+      })
     }
 
     const layers = [

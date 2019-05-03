@@ -138,6 +138,9 @@ class Panel extends Component {
 }
 
 export default connect(
-  ({ map: { paths }, config: { colorBy } }) => ({ paths, colorBy }),
+  ({ map: { paths, hovered }, config: { colorBy } }) => ({
+    paths,
+    colorBy,
+  }),
   { changeHovered, switchColorBy },
 )(Panel)
