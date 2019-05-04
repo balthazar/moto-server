@@ -1,15 +1,18 @@
 import { handleActions, createAction } from 'redux-actions'
 
-export const setPaths = createAction('SET_PATHS')
+export const setTrips = createAction('SET_TRIPS')
+export const selectTrip = createAction('SELECT_TRIP')
 export const changeHovered = createAction('CHANGE_HOVERED')
 
 export default handleActions(
   {
-    SET_PATHS: (state, { payload: paths }) => ({...state, paths }),
+    SET_TRIPS: (state, { payload: trips }) => ({...state, trips }),
+    SELECT_TRIP: (state, { payload: selectedTrip }) => ({...state, selectedTrip }),
     CHANGE_HOVERED: (state, { payload: hovered }) => ({ ...state, hovered }),
   },
   {
     hovered: null,
-    paths: [],
+    selectedTrip: null,
+    trips: [],
   },
 )

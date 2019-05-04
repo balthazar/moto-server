@@ -3,20 +3,21 @@ import { connect } from 'react-redux'
 import { StaticMap } from 'react-map-gl'
 import DeckGL from '@deck.gl/react'
 import { ScatterplotLayer } from '@deck.gl/layers'
-import * as turf from '@turf/turf'
 import imm from 'object-path-immutable'
+import get from 'lodash/get'
 
 import MultiColorPathLayer from './multi-color-path-layer'
 
 import pieces from '../pieces'
-import { setPaths, changeHovered } from '../reducers/map'
+import { setTrips, selectTrip, changeHovered } from '../reducers/map'
+import { getPointDistance } from '../fn/turfUtils'
 
 import data from '../../db.json'
 
 const INITIAL_VIEW_STATE = {
   latitude: 37.787689153,
   longitude: -122.414607454,
-  zoom: 14,
+  zoom: 12,
 }
 
 const hexToRgb = hex =>
@@ -37,13 +38,7 @@ const getColor = (value, colorBy) => {
   return pieces[colorBy][pieces[colorBy].length - 1].color
 }
 
-const getDistance = (a, b) => {
-  const from = turf.point(a)
-  const to = turf.point(b)
-  return turf.distance(from, to, { units: 'meters' })
-}
-
-const createPaths = colorBy => {
+const createTrips = colorBy => {
   const trips = data.traces.reduce((acc, cur, i) => {
     const { lat, lon, time } = cur
 
@@ -60,7 +55,7 @@ const createPaths = colorBy => {
       return [...acc, { path: [[lon, lat]], color: [color], data: [payload] }]
     }
 
-    const distanceFromPrev = getDistance([prev.lon, prev.lat], [lon, lat])
+    const distanceFromPrev = getPointDistance([prev.lon, prev.lat], [lon, lat])
     if (distanceFromPrev < 2) {
       return acc
     }
@@ -76,68 +71,85 @@ const createPaths = colorBy => {
   return trips
 }
 
+const getClosestPoint = (tripData, coordinate) =>
+  tripData.reduce(
+    (acc, cur, index) => {
+      const distance = getPointDistance(coordinate, [cur.lon, cur.lat])
+
+      if (!acc.data || distance < acc.distance) {
+        return { distance, data: cur, index }
+      }
+
+      return acc
+    },
+    { data: null, distance: -1, index: -1 },
+  )
+
 class Map extends Component {
   componentWillMount() {
     const { colorBy } = this.props
-    this.props.setPaths(createPaths(colorBy))
+    const trips = createTrips(colorBy)
+    this.props.setTrips(trips)
+
+    this.onHover = this.onHover.bind(this)
+    this.onClick = this.onClick.bind(this)
   }
 
   componentWillUpdate(nextProps) {
     if (nextProps.colorBy !== this.props.colorBy) {
-      this.props.setPaths(createPaths(nextProps.colorBy))
+      const trips = createTrips(nextProps.colorBy)
+      this.props.setTrips(trips)
     }
   }
 
-  render() {
-    const { paths, hovered, colorBy } = this.props
+  onHover(info) {
+    const { colorBy, hovered, trips, selectedTrip } = this.props
 
-    const onHover = info => {
-      if (!info.object) {
-        return this.props.changeHovered(null)
-      }
+    const pathIndex =
+      isNaN(info.index) || info.index < -1 || info.layer.id === 'hover'
+        ? get(hovered, 'pathIndex')
+        : info.index
 
-      const pathIndex = info.index || (hovered && hovered.pathIndex)
-      if (!pathIndex) {
-        return
-      }
-
-      const { data } = paths[pathIndex].data.reduce(
-        (acc, cur) => {
-          const distance = getDistance(info.coordinate, [cur.lon, cur.lat])
-
-          if (!acc.data || distance < acc.distance) {
-            return { distance, data: cur }
-          }
-
-          return acc
-        },
-        { data: null, distance: -1 },
-      )
-
-      const color = getColor(data[colorBy], colorBy)
-      this.props.changeHovered({
-        coords: [data.lon, data.lat],
-        color,
-        pathIndex,
-      })
+    const trip = selectedTrip || trips[pathIndex]
+    if (!trip) {
+      return
     }
+
+    const { data, index } = getClosestPoint(trip.data, info.coordinate)
+
+    const color = getColor(data[colorBy], colorBy)
+    this.props.changeHovered({
+      coords: [data.lon, data.lat],
+      color,
+      pathIndex,
+      pointIndex: index,
+    })
+  }
+
+  onClick() {
+    const { hovered } = this.props
+    this.props.selectTrip(hovered ? hovered.pathIndex : null)
+  }
+
+  render() {
+    const { trips, selectedTrip, hovered } = this.props
 
     const layers = [
       new MultiColorPathLayer({
         id: 'path-layer',
-        data: paths,
+        data: selectedTrip ? [selectedTrip] : trips,
         pickable: true,
         widthScale: 1,
         widthMinPixels: 2,
         getPath: d => d.path,
         getColor: d => d.color,
-        getWidth: d => 5,
-        onHover,
+        getWidth: () => 5,
+        onHover: this.onHover,
       }),
 
       hovered &&
         new ScatterplotLayer({
-          id: 'scatterplot-layer',
+          id: 'hover',
           data: [hovered],
           pickable: true,
           opacity: 0.8,
@@ -148,31 +160,38 @@ class Map extends Component {
           radiusMaxPixels: 100,
           lineWidthMinPixels: 1,
           getPosition: d => d.coords,
-          getRadius: d => 10,
+          getRadius: () => 10,
           getFillColor: d => hexToRgb(d.color),
-          getLineColor: d => [0, 0, 0],
-          onHover,
+          getLineColor: () => [0, 0, 0],
+          onHover: this.onHover,
         }),
     ].filter(f => f)
 
     return (
-      <DeckGL
-        ref={c => (this.deckGL = c)}
-        initialViewState={INITIAL_VIEW_STATE}
-        controller
-        pickingRadius={30}
-        layers={layers}
-      >
-        <StaticMap
-          mapboxApiAccessToken={process.env.MapboxAccessToken}
-          mapStyle="mapbox://styles/mapbox/dark-v10"
-        />
-      </DeckGL>
+      <div onClick={this.onClick}>
+        <DeckGL
+          ref={c => (this.deckGL = c)}
+          initialViewState={INITIAL_VIEW_STATE}
+          controller
+          pickingRadius={30}
+          layers={layers}
+        >
+          <StaticMap
+            mapboxApiAccessToken={process.env.MapboxAccessToken}
+            mapStyle="mapbox://styles/mapbox/dark-v10"
+          />
+        </DeckGL>
+      </div>
     )
   }
 }
 
 export default connect(
-  ({ map: { hovered, paths }, config: { colorBy } }) => ({ hovered, paths, colorBy }),
-  { setPaths, changeHovered },
+  ({ map: { hovered, trips, selectedTrip }, config: { colorBy } }) => ({
+    hovered,
+    trips,
+    colorBy,
+    selectedTrip: get(trips, [selectedTrip]),
+  }),
+  { setTrips, selectTrip, changeHovered },
 )(Map)

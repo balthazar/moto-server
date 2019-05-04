@@ -12,6 +12,7 @@ export default {
     { gt: 20, lte: 50, color: '#7EAA00' },
     { gt: 50, lte: 70, color: '#D5D500' },
     { gt: 70, lte: 100, color: '#FFB600' },
-    { gt: 100, color: '#FF8328' },
+    { gt: 100, lte: 200, color: '#FF8328' },
+    { gt: 100, color: '#FF0000' },
   ],
 }
