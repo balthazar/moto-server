@@ -26,6 +26,8 @@ const Container = styled.div`
   left: 10px;
   padding: 20px;
   background-color: rgba(35, 35, 35, 0.8);
+  font-family: monospace;
+  color: white;
 `
 
 const ChartContainer = styled.div`
@@ -35,7 +37,6 @@ const ChartContainer = styled.div`
 
 const TripsBrowser = styled.div`
   color: white;
-  font-family: monospace;
   overflow: auto;
   min-height: 100px;
   max-height: 200px;
@@ -52,6 +53,13 @@ const TripItem = styled.div`
 
 const Tools = styled.div`
   margin-bottom: 10px;
+
+  .mode {
+    position: absolute;
+    right: 20px;
+    padding: 5px;
+    background-color: rgba(0, 0, 0, 0.2);
+  }
 `
 
 const timeDiff = (a, b) => {
@@ -126,6 +134,7 @@ class Panel extends Component {
     return (
       <Container onMouseEnter={this.addFocus} onMouseLeave={this.removeHover}>
         <Tools>
+          <span className="mode">{`mode: ${colorBy}`}</span>
           <button onClick={switchColorBy}>switch mode</button>
           {selectedTrip && <button onClick={() => selectTrip(null)}>unselect</button>}
         </Tools>

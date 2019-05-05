@@ -2,7 +2,7 @@ import { createStore, applyMiddleware, compose } from 'redux'
 
 import reducer from './reducers'
 
-export default (history, initialState) => {
+export default (initialState) => {
   const devTools = window.devToolsExtension ? window.devToolsExtension() : f => f
   const middlewares = []
   const enhancers = compose(
