@@ -1,24 +1,26 @@
-import React, { Component } from 'react'
+import React from 'react'
 import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
 
-import Map from './components/Map'
+import DashboardMap from './components/DashboardMap'
 import Panel from './components/Panel'
+import ViewerMap from './components/ViewerMap'
 
 import createStore from './store'
 
 const store = createStore()
 
-class App extends Component {
-  render() {
-    return (
-      <React.Fragment>
-        <Map />
-        <Panel />
-      </React.Fragment>
-    )
-  }
+const apps = {
+  viewer: () => <ViewerMap />,
+  dashboard: () => (
+    <>
+      <DashboardMap />
+      <Panel />
+    </>
+  ),
 }
+
+const App = apps[__APP__]
 
 ReactDOM.render(
   <Provider store={store}>

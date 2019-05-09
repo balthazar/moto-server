@@ -30,6 +30,9 @@ module.exports = {
 
   plugins: [
     new webpack.EnvironmentPlugin(['MapboxAccessToken']),
+    new webpack.DefinePlugin({
+      __APP__: JSON.stringify(process.argv[4].slice(2)),
+    }),
     new HtmlWebpackPlugin({ template: 'app/index.html' }),
   ],
 }

@@ -20,6 +20,10 @@ export const hexToRgb = hex => {
 }
 
 export const getColor = (value, colorBy) => {
+  if (isNaN(value)) {
+    return '#000'
+  }
+
   for (let i = 0; i < pieces[colorBy].length; ++i) {
     const { lte, color } = pieces[colorBy][i]
     if (value <= lte) {

@@ -139,7 +139,7 @@ class Panel extends Component {
           {selectedTrip && <button onClick={() => selectTrip(null)}>unselect</button>}
         </Tools>
 
-        {selectedTrip && (
+        {selectedTrip && colorBy !== 'opacity' && (
           <ChartContainer>
             <ReactEchartsCore
               echarts={echarts}
