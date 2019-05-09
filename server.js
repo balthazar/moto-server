@@ -20,24 +20,30 @@ wss.broadcast = data => {
   })
 }
 
+const getInitData = () => {
+  const traces = db.get('traces').value()
+  const start = db.get('start').value()
+  const last = db.get('last').value()
+  const lastTraces = traces.filter(t => t.time > start)
+
+  return JSON.stringify({ type: 'viewerData', traces: lastTraces, last })
+}
+
 wss.on('connection', socket => {
   socket.on('message', message => {
     try {
       const { type, ...data } = JSON.parse(message)
 
       if (type === 'viewer') {
-        const traces = db.get('traces').value()
-        const start = db.get('start').value()
-        const last = db.get('last').value()
-        const lastTraces = traces.filter(t => t.time > start)
-        socket.send(JSON.stringify({ type: 'viewerData', traces: lastTraces, last }))
-        return
+        return socket.send(getInitData())
       }
 
       if (type === 'auth') {
         if (data.code === process.env.ACCESS_KEY) {
           socket.isAuthenticated = true
           db.set('start', Date.now()).write()
+
+          wss.broadcast(getInitData())
         }
 
         return
