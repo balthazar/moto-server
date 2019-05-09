@@ -3,10 +3,6 @@
     "name"  : "gps-track",
     "script": "yarn",
     "args": "server"
-  }, {
-    "name"  : "gps-track-viewer",
-    "script": "yarn",
-    "args": "viewer"
   }],
   "deploy": {
     "production": {
