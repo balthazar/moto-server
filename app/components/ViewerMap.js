@@ -74,10 +74,7 @@ export default () => {
       pickingRadius={30}
       layers={layers}
     >
-      <StaticMap
-        mapboxApiAccessToken={process.env.MapboxAccessToken}
-        mapStyle="mapbox://styles/mapbox/dark-v10"
-      />
+      <StaticMap mapboxApiAccessToken={__MAPBOX__} mapStyle="mapbox://styles/mapbox/dark-v10" />
     </DeckGL>
   )
 }

@@ -20,7 +20,7 @@ const apps = {
   ),
 }
 
-const App = apps[__APP__]
+const App = apps[__APP__] || apps.viewer
 
 ReactDOM.render(
   <Provider store={store}>

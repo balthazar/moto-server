@@ -15,7 +15,7 @@
       "ref"        : "origin/master",
       "repo"       : "git@github.com:balthazar/gps-track.git",
       "path"       : "/var/www/gps-track",
-      "post-deploy": "yarn && pm2 startOrRestart ecosystem.json5 --env production --log-date-format 'DD-MM HH:mm:ss.SSS'",
+      "post-deploy": "yarn && rm -rf dist && yarn build && pm2 startOrRestart ecosystem.json5 --env production --log-date-format 'DD-MM HH:mm:ss.SSS'",
     }
   }
 }
