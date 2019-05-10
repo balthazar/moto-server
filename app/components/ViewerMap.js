@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { StaticMap } from 'react-map-gl'
-import DeckGL from '@deck.gl/react'
-import { ScatterplotLayer } from '@deck.gl/layers'
+import { DeckGL, ScatterplotLayer, TripsLayer } from 'deck.gl'
 import ReconnectingWebSocket from 'reconnecting-websocket'
-import { TripsLayer } from '@deck.gl/geo-layers'
 
 export default () => {
   const [last, setLast] = useState({
@@ -38,17 +36,17 @@ export default () => {
   }, [true])
 
   const layers = [
-    new TripsLayer({
-      id: 'path-layer',
-      data: [{ traces }],
-      getColor: () => [66, 134, 244],
-      getPath: d => d.traces.map(t => [t.lon, t.lat]),
-      opacity: 0.8,
-      widthMinPixels: 5,
-      rounded: true,
-      trailLength: 200,
-      currentTime: Date.now(),
-    }),
+    traces.length &&
+      new TripsLayer({
+        data: [{ traces }],
+        getColor: [66, 134, 244],
+        getPath: d => d.traces.map((t, i) => [t.lon, t.lat, i]),
+        opacity: 1,
+        widthMinPixels: 5,
+        rounded: true,
+        trailLength: traces.length < 500 ? traces.length / 2 : 500,
+        currentTime: traces.length,
+      }),
 
     last &&
       new ScatterplotLayer({

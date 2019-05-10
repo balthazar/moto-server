@@ -180,15 +180,15 @@
     lodash "^4.17.11"
     to-fast-properties "^2.0.0"
 
-"@deck.gl/aggregation-layers@7.0.4":
-  version "7.0.4"
-  resolved "https://registry.yarnpkg.com/@deck.gl/aggregation-layers/-/aggregation-layers-7.0.4.tgz#006084b52158deabd3f19d17c121a8693fc58dbf"
+"@deck.gl/aggregation-layers@7.0.5":
+  version "7.0.5"
+  resolved "https://registry.yarnpkg.com/@deck.gl/aggregation-layers/-/aggregation-layers-7.0.5.tgz#f3cb4adffd7bb2b3d6c2b956c863bb77faefa5a4"
   dependencies:
     d3-hexbin "^0.2.1"
 
-"@deck.gl/core@7.0.4":
-  version "7.0.4"
-  resolved "https://registry.yarnpkg.com/@deck.gl/core/-/core-7.0.4.tgz#406977fd149d1bc9cb20591e5417b002ef986b41"
+"@deck.gl/core@7.0.5":
+  version "7.0.5"
+  resolved "https://registry.yarnpkg.com/@deck.gl/core/-/core-7.0.5.tgz#bd2cf3d944d61f14dfc9538480567bdf0bb33a7d"
   dependencies:
     "@luma.gl/core" "^7.0.1"
     gl-matrix "^3.0.0"
@@ -198,46 +198,46 @@
     seer "^0.2.4"
     viewport-mercator-project "^6.1.0"
 
-"@deck.gl/geo-layers@7.0.4":
-  version "7.0.4"
-  resolved "https://registry.yarnpkg.com/@deck.gl/geo-layers/-/geo-layers-7.0.4.tgz#8f5c94a445fde17fe319caa14289cf4bd782d158"
+"@deck.gl/geo-layers@7.0.5":
+  version "7.0.5"
+  resolved "https://registry.yarnpkg.com/@deck.gl/geo-layers/-/geo-layers-7.0.5.tgz#d79a6b71dde44894247edd484a29340a9080b17a"
   dependencies:
     h3-js "^3.4.3"
     s2-geometry "^1.2.10"
 
-"@deck.gl/google-maps@7.0.4":
-  version "7.0.4"
-  resolved "https://registry.yarnpkg.com/@deck.gl/google-maps/-/google-maps-7.0.4.tgz#969e3f09ef611802ff6da847aabcd6bd238a253b"
+"@deck.gl/google-maps@7.0.5":
+  version "7.0.5"
+  resolved "https://registry.yarnpkg.com/@deck.gl/google-maps/-/google-maps-7.0.5.tgz#70373e2ee532d459821203e270aa95aca413a0f2"
 
-"@deck.gl/json@7.0.4":
-  version "7.0.4"
-  resolved "https://registry.yarnpkg.com/@deck.gl/json/-/json-7.0.4.tgz#e83a1c284480b7fc80666e133d87862e3ac930f8"
+"@deck.gl/json@7.0.5":
+  version "7.0.5"
+  resolved "https://registry.yarnpkg.com/@deck.gl/json/-/json-7.0.5.tgz#42f74c7e1d1e45a579b1986df793d9f87ce8c248"
   dependencies:
     d3-dsv "^1.0.8"
 
-"@deck.gl/layers@7.0.4", "@deck.gl/layers@^7.0.4":
-  version "7.0.4"
-  resolved "https://registry.yarnpkg.com/@deck.gl/layers/-/layers-7.0.4.tgz#77317989f967a9635664ab217f0dbca76057474c"
+"@deck.gl/layers@7.0.5":
+  version "7.0.5"
+  resolved "https://registry.yarnpkg.com/@deck.gl/layers/-/layers-7.0.5.tgz#879d6e48c9d41ffaac2c0b2d4a0d8d565672b189"
   dependencies:
-    "@loaders.gl/core" "^1.0.1"
-    "@loaders.gl/images" "^1.0.1"
+    "@loaders.gl/core" "^1.0.3"
+    "@loaders.gl/images" "^1.0.3"
     "@mapbox/tiny-sdf" "^1.1.0"
     earcut "^2.0.6"
 
-"@deck.gl/mapbox@7.0.4":
-  version "7.0.4"
-  resolved "https://registry.yarnpkg.com/@deck.gl/mapbox/-/mapbox-7.0.4.tgz#051e12c0daa3efd43b7c81d0f61e809719ae6085"
+"@deck.gl/mapbox@7.0.5":
+  version "7.0.5"
+  resolved "https://registry.yarnpkg.com/@deck.gl/mapbox/-/mapbox-7.0.5.tgz#cf8c832cd7ead9526a60bad77ebcb4331941ef22"
 
-"@deck.gl/mesh-layers@7.0.4":
-  version "7.0.4"
-  resolved "https://registry.yarnpkg.com/@deck.gl/mesh-layers/-/mesh-layers-7.0.4.tgz#b695c7b80dd4b07248da92d394d14d482cfb79f4"
+"@deck.gl/mesh-layers@7.0.5":
+  version "7.0.5"
+  resolved "https://registry.yarnpkg.com/@deck.gl/mesh-layers/-/mesh-layers-7.0.5.tgz#d54c2d56cdb1a1f8075be0e3149a49515a508342"
   dependencies:
-    "@loaders.gl/core" "^1.0.1"
-    "@loaders.gl/images" "^1.0.1"
+    "@loaders.gl/core" "^1.0.3"
+    "@loaders.gl/images" "^1.0.3"
 
-"@deck.gl/react@7.0.4", "@deck.gl/react@^7.0.4":
-  version "7.0.4"
-  resolved "https://registry.yarnpkg.com/@deck.gl/react/-/react-7.0.4.tgz#519cb920403c2ff28cf77d4a7e0345d2c140437d"
+"@deck.gl/react@7.0.5":
+  version "7.0.5"
+  resolved "https://registry.yarnpkg.com/@deck.gl/react/-/react-7.0.5.tgz#e6e6f295003aa4b248c115fbf5cc1a7f08f5677c"
   dependencies:
     prop-types "^15.6.0"
 
@@ -255,13 +255,13 @@
   version "0.7.3"
   resolved "https://registry.yarnpkg.com/@emotion/unitless/-/unitless-0.7.3.tgz#6310a047f12d21a1036fb031317219892440416f"
 
-"@loaders.gl/core@^1.0.1":
+"@loaders.gl/core@^1.0.3":
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/@loaders.gl/core/-/core-1.0.3.tgz#60a1467e583f28d974a72f947cf2c7c2bc266393"
   dependencies:
     "@babel/runtime" "^7.3.1"
 
-"@loaders.gl/images@^1.0.1":
+"@loaders.gl/images@^1.0.3":
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/@loaders.gl/images/-/images-1.0.3.tgz#f2d4d75f53a84289b30900c44711ab4fd32e25bd"
   dependencies:
@@ -2529,19 +2529,19 @@ decamelize@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/decamelize/-/decamelize-1.2.0.tgz#f6534d15148269b20352e7bee26f501f9a191290"
 
-deck.gl@^7.0.4:
-  version "7.0.4"
-  resolved "https://registry.yarnpkg.com/deck.gl/-/deck.gl-7.0.4.tgz#16e0808ab0fe64a83f63cb396dfa81adf131ce06"
+deck.gl@^7.0.5:
+  version "7.0.5"
+  resolved "https://registry.yarnpkg.com/deck.gl/-/deck.gl-7.0.5.tgz#ab4d45af6644c2935d6f9483dbd979e0a87d0826"
   dependencies:
-    "@deck.gl/aggregation-layers" "7.0.4"
-    "@deck.gl/core" "7.0.4"
-    "@deck.gl/geo-layers" "7.0.4"
-    "@deck.gl/google-maps" "7.0.4"
-    "@deck.gl/json" "7.0.4"
-    "@deck.gl/layers" "7.0.4"
-    "@deck.gl/mapbox" "7.0.4"
-    "@deck.gl/mesh-layers" "7.0.4"
-    "@deck.gl/react" "7.0.4"
+    "@deck.gl/aggregation-layers" "7.0.5"
+    "@deck.gl/core" "7.0.5"
+    "@deck.gl/geo-layers" "7.0.5"
+    "@deck.gl/google-maps" "7.0.5"
+    "@deck.gl/json" "7.0.5"
+    "@deck.gl/layers" "7.0.5"
+    "@deck.gl/mapbox" "7.0.5"
+    "@deck.gl/mesh-layers" "7.0.5"
+    "@deck.gl/react" "7.0.5"
 
 decode-uri-component@^0.2.0:
   version "0.2.0"
