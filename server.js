@@ -9,6 +9,8 @@ const db = low(adapter)
 
 db.defaults({ traces: [], start: null, last: {} }).write()
 
+const port = 4040
+
 const server = https.createServer({
   cert: fs.readFileSync('/etc/letsencrypt/live/balthazargronon.com/cert.pem'),
   key: fs.readFileSync('/etc/letsencrypt/live/balthazargronon.com/privkey.pem'),
@@ -16,7 +18,7 @@ const server = https.createServer({
 
 const wss = new WebSocket.Server({ server })
 
-server.listen(4040)
+server.listen(port)
 
 console.log(`[GPS-TRACK] started on :${port}`)
 
