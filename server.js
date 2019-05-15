@@ -1,3 +1,5 @@
+const https = require('https')
+const fs = require('fs')
 const low = require('lowdb')
 const FileSync = require('lowdb/adapters/FileSync')
 const WebSocket = require('ws')
@@ -7,8 +9,14 @@ const db = low(adapter)
 
 db.defaults({ traces: [], start: null, last: {} }).write()
 
-const port = 4040
-const wss = new WebSocket.Server({ port })
+const server = https.createServer({
+  cert: fs.readFileSync('/etc/letsencrypt/live/balthazargronon.com/cert.pem'),
+  key: fs.readFileSync('/etc/letsencrypt/live/balthazargronon.com/privkey.pem'),
+})
+
+const wss = new WebSocket.Server({ server })
+
+server.listen(4040)
 
 console.log(`[GPS-TRACK] started on :${port}`)
 
@@ -54,7 +62,8 @@ wss.on('connection', socket => {
       }
 
       db.set('last', data).value()
-      db.get('traces')
+      db
+        .get('traces')
         .push(data)
         .value()
       db.write()
