@@ -52,8 +52,11 @@ wss.on('connection', socket => {
         if (data.code === process.env.ACCESS_KEY) {
           socket.isAuthenticated = true
           db.set('start', Date.now()).write()
+          console.log('[Master login] Success.')
 
           wss.broadcast(getInitData())
+        } else {
+          console.log('[Master login] Failed.')
         }
 
         return
