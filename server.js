@@ -20,7 +20,7 @@ const wss = new WebSocket.Server({ server })
 
 server.listen(port)
 
-console.log(`[GPS-TRACK] started on :${port}`)
+console.log(`[GPS-TRACK] ${new Date()} Started on :${port}`)
 
 wss.broadcast = data => {
   wss.clients.forEach(client => {
@@ -52,11 +52,11 @@ wss.on('connection', socket => {
         if (data.code === process.env.ACCESS_KEY) {
           socket.isAuthenticated = true
           db.set('start', Date.now()).write()
-          console.log('[Master login] Success.')
+          console.log(`[Master login] ${new Date()} Success.`)
 
           wss.broadcast(getInitData())
         } else {
-          console.log('[Master login] Failed.')
+          console.log(`[Master login] ${new Date()} Failed.`)
         }
 
         return
