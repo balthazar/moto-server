@@ -5,6 +5,7 @@ const FileSync = require('lowdb/adapters/FileSync')
 const WebSocket = require('ws')
 const fetch = require('node-fetch')
 const express = require('express')
+const cors = require('cors')
 
 const adapter = new FileSync('db.json')
 const db = low(adapter)
@@ -23,6 +24,7 @@ const wss = new WebSocket.Server({ server })
 server.listen(port)
 
 const app = express()
+app.use(cors())
 
 app.get('/chatters/:name', async (req, res) => {
   const fet = await fetch(`https://tmi.twitch.tv/group/user/${req.params.name}/chatters`)
