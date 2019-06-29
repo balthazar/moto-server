@@ -3,6 +3,7 @@ const fs = require('fs')
 const low = require('lowdb')
 const FileSync = require('lowdb/adapters/FileSync')
 const WebSocket = require('ws')
+const fetch = require('node-fetch')
 
 const adapter = new FileSync('db.json')
 const db = low(adapter)
@@ -17,6 +18,17 @@ const server = https.createServer({
 })
 
 const wss = new WebSocket.Server({ server })
+
+server.get('/chatters/:name', async (req, res) => {
+  const res = await fetch(`https://tmi.twitch.tv/group/user/${req.params.name}/chatters`)
+  const json = await res.json()
+
+  const users = Object.keys(json.chatters)
+    .reduce((acc, cur) => acc.concat(json.chatters[cur]), [])
+    .filter(u => u !== 'streamlabs' && u !== 'sneakware')
+
+  res.json(users)
+})
 
 server.listen(port)
 
