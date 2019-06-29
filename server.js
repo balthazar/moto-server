@@ -4,6 +4,7 @@ const low = require('lowdb')
 const FileSync = require('lowdb/adapters/FileSync')
 const WebSocket = require('ws')
 const fetch = require('node-fetch')
+const express = require('express')
 
 const adapter = new FileSync('db.json')
 const db = low(adapter)
@@ -19,9 +20,13 @@ const server = https.createServer({
 
 const wss = new WebSocket.Server({ server })
 
-server.get('/chatters/:name', async (req, res) => {
-  const res = await fetch(`https://tmi.twitch.tv/group/user/${req.params.name}/chatters`)
-  const json = await res.json()
+server.listen(port)
+
+const app = express()
+
+app.get('/chatters/:name', async (req, res) => {
+  const fet = await fetch(`https://tmi.twitch.tv/group/user/${req.params.name}/chatters`)
+  const json = await fet.json()
 
   const users = Object.keys(json.chatters)
     .reduce((acc, cur) => acc.concat(json.chatters[cur]), [])
@@ -30,9 +35,9 @@ server.get('/chatters/:name', async (req, res) => {
   res.json(users)
 })
 
-server.listen(port)
+app.listen(port + 1)
 
-console.log(`[GPS-TRACK] ${new Date()} Started on :${port}`)
+console.log(`[GPS-TRACK] ${new Date()} Started on :${port} and :${port + 1}`)
 
 wss.broadcast = data => {
   wss.clients.forEach(client => {
