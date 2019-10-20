@@ -17,7 +17,7 @@ const port = 4040
 const server =
   process.env.NODE_ENV === 'production'
     ? https.createServer({
-        cert: fs.readFileSync('/etc/letsencrypt/live/balthazargronon.com/cert.pem'),
+        cert: fs.readFileSync('/etc/letsencrypt/live/balthazargronon.com/fullchain.pem'),
         key: fs.readFileSync('/etc/letsencrypt/live/balthazargronon.com/privkey.pem'),
       })
     : http.createServer()

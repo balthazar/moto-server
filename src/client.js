@@ -1,5 +1,5 @@
 import ws from 'ws'
-import ReconnectingWebSocket from 'reconnecting-websockets'
+import ReconnectingWebSocket from 'reconnecting-websocket'
 import gpsd from 'node-gpsd'
 
 const socket = new ReconnectingWebSocket('wss://balthazargronon.com:4040', null, {
@@ -7,8 +7,6 @@ const socket = new ReconnectingWebSocket('wss://balthazargronon.com:4040', null,
   debug: true,
   reconnectInterval: 3000,
 })
-
-process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = '0'
 
 const daemon = new gpsd.Daemon({
   program: 'gpsd',
@@ -44,3 +42,15 @@ daemon.start(() => {
     listener.watch()
   })
 })
+
+// const payload = {
+//   time: Date.now(),
+//   lat: 13,
+//   lon: 2,
+//   alt: 1,
+//   speed: 100,
+//   climb: 0,
+//   accuracy: 1,
+// }
+
+// socket.send(JSON.stringify({ ...payload }))
