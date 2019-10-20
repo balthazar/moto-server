@@ -3,17 +3,19 @@
   "version": "0.0.0",
   "description": "",
   "scripts": {
-    "server": "node -r dotenv/config server",
-    "client": "node -r dotenv/config client"
+    "server": "node -r esm -r dotenv/config src/server",
+    "client": "node -r esm -r dotenv/config src/client"
   },
   "dependencies": {
-    "cors": "^2.8.5",
     "dotenv": "^7.0.0",
     "express": "^4.17.1",
-    "lowdb": "^1.0.0",
+    "mongoose": "^5.7.5",
     "node-fetch": "^2.6.0",
     "node-gpsd": "^0.3.0",
     "reconnecting-websocket": "^4.1.10",
     "ws": "^6.2.1"
+  },
+  "devDependencies": {
+    "esm": "^3.2.25"
   }
 }

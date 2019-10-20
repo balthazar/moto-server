@@ -1,6 +1,6 @@
-const ws = require('ws')
-const ReconnectingWebSocket = require('reconnecting-websocket')
-const gpsd = require('node-gpsd')
+import ws from 'ws'
+import ReconnectingWebSocket from 'reconnecting-websockets'
+import gpsd from 'node-gpsd'
 
 const socket = new ReconnectingWebSocket('wss://balthazargronon.com:4040', null, {
   WebSocket: ws,
