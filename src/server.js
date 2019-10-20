@@ -4,7 +4,6 @@ import fs from 'fs'
 
 import WebSocket from 'ws'
 import fetch from 'node-fetch'
-import express from 'express'
 import mongoose from 'mongoose'
 
 import Trace from './models/trace'
