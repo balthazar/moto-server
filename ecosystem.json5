@@ -2,7 +2,10 @@
   "apps": [{
     "name"  : "gps-track",
     "script": "yarn",
-    "args": "server"
+    "args": "server",
+    "env": {
+      "NODE_ENV": "production",
+    }
   }],
   "deploy": {
     "production": {
