@@ -34,7 +34,9 @@ daemon.start(() => {
       return console.log('[Ignoring inaccurate point]')
     }
 
-    socket.send(JSON.stringify({ time: Date.now(), lat, lon, alt, speed, climb, accuracy }))
+    socket.send(
+      JSON.stringify({ type: 'trace', time: Date.now(), lat, lon, alt, speed, climb, accuracy }),
+    )
   })
 
   listener.connect(() => {
@@ -44,6 +46,7 @@ daemon.start(() => {
 })
 
 // const payload = {
+//   type: 'trace',
 //   time: Date.now(),
 //   lat: 13,
 //   lon: 2,
