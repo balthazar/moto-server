@@ -35,6 +35,12 @@ wss.broadcast = data => {
   })
 }
 
+const state = {
+  currentTime: null,
+  intervalId: null,
+  traces: [],
+}
+
 wss.on('connection', socket => {
   socket.on('message', async message => {
     try {
@@ -59,6 +65,31 @@ wss.on('connection', socket => {
           .reduce((acc, cur) => acc.concat(json.chatters[cur]), [])
           .filter(u => u !== 'streamlabs' && u !== 'sneakware')
 
+        //   const circle = turf.circle([last.lon, last.lat], 1000, { steps: 10, units: 'meters' })
+        //   const box = turf.bbox(circle)
+
+        //   const update = {}
+
+        //   users.push('sneakware')
+
+        //   for (let i = 0; i < users.length; ++i) {
+        //     const name = users[i]
+        //     if (usersCache[name]) {
+        //       continue
+        //     }
+
+        //     const userRes = await fetch(`https://api.twitch.tv/helix/users?login=${name}`, {
+        //       headers: {
+        //         'Client-ID': 'z777edtct5ksb29wzc7la89udg02gk',
+        //       },
+        //     })
+
+        //     const user = (await userRes.json()).data[0]
+        //     const coordinates = turf.randomPosition(box)
+
+        //     usersCache[name] = true
+        //     update[name] = { ...user, coordinates }
+
         socket.send({ type: 'chatters', data: users })
       }
 
@@ -66,7 +97,22 @@ wss.on('connection', socket => {
         return
       }
 
-      if (type === 'control') {
+      if (type === 'bootstrap') {
+        clearTimeout(state.intervalId)
+
+        const splits = payload.value
+          .trim()
+          .split('\n')
+          .map(s => {
+            const [sec, ts] = s.split(':')
+            return { sec, ts }
+          })
+
+        console.log(splits)
+
+        // const traces = await Trace.find({ time: { $gt: }})
+
+        state.intervalId = setInterval(() => {}, 1e3)
       }
 
       if (type === 'trace') {
