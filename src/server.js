@@ -1,7 +1,6 @@
 import http from 'http'
 import https from 'https'
 import fs from 'fs'
-import fetch from 'node-fetch'
 
 import WebSocket from 'ws'
 import fetch from 'node-fetch'
