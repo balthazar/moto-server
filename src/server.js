@@ -1,6 +1,7 @@
 import http from 'http'
 import https from 'https'
 import fs from 'fs'
+import fetch from 'node-fetch'
 
 import WebSocket from 'ws'
 import fetch from 'node-fetch'
@@ -24,7 +25,7 @@ const server =
 const wss = new WebSocket.Server({ server })
 
 server.listen(port, () => {
-  console.log(`[GPS-TRACK] ${new Date()} Started on :${port}`)
+  console.log(`[MOTO-SERVER] ${new Date()} Started on :${port}`)
 })
 
 wss.broadcast = data => {
@@ -36,30 +37,45 @@ wss.broadcast = data => {
 }
 
 wss.on('connection', socket => {
-  socket.on('message', message => {
+  socket.on('message', async message => {
     try {
       const { type, ...data } = JSON.parse(message)
 
       if (type === 'auth') {
         if (data.code === process.env.ACCESS_KEY) {
           socket.isAuthenticated = true
-          console.log(`[Master login] ${new Date()} Success.`)
+          console.log(`[Auth] ${new Date()} Success.`)
         } else {
-          console.log(`[Master login] ${new Date()} Failed.`)
+          console.log(`[Auth] ${new Date()} Failed.`)
         }
 
         return
+      }
+
+      if (type === 'getChatters') {
+        const fet = await fetch('https://tmi.twitch.tv/group/user/sneakware/chatters')
+        const json = await fet.json()
+
+        const users = Object.keys(json.chatters)
+          .reduce((acc, cur) => acc.concat(json.chatters[cur]), [])
+          .filter(u => u !== 'streamlabs' && u !== 'sneakware')
+
+        socket.send({ type: 'chatters', data: users })
       }
 
       if (!socket.isAuthenticated) {
         return
       }
 
-      Trace.create(data)
+      if (type === 'control') {
+      }
 
-      wss.broadcast(JSON.stringify({ type: 'last', ...data }))
+      if (type === 'trace') {
+        process.stdout.write('.')
+        Trace.create(data)
+      }
     } catch (err) {
-      console.log('[GPS-TRACK] Error', err)
+      console.log('[MOTO-SERVER] Error', err)
     }
   })
 })

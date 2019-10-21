@@ -1,3 +1,3 @@
-# gps-track
+# moto-server
 
-> A little side-project to track my moto deplacements
+> Tracking system and viz backend
