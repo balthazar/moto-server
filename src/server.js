@@ -36,9 +36,12 @@ wss.broadcast = data => {
 }
 
 const state = {
-  currentTime: null,
   intervalId: null,
   traces: [],
+  currentTime: null,
+  currentTs: null,
+  currentTrace: null,
+  currentSplit: null,
 }
 
 wss.on('connection', socket => {
@@ -98,21 +101,51 @@ wss.on('connection', socket => {
       }
 
       if (type === 'bootstrap') {
-        clearTimeout(state.intervalId)
+        clearInterval(state.intervalId)
+        state.currentTime = 710 || null
+        state.currentTrace = null
 
-        const splits = payload.value
+        const splits = data.value
           .trim()
           .split('\n')
           .map(s => {
             const [sec, ts] = s.split(':')
-            return { sec, ts }
+            return { sec: Number(sec), ts: Number(ts) }
           })
+          .filter(s => s.ts)
 
-        console.log(splits)
+        state.traces = await Trace.find({ time: { $gte: splits[0].ts  }}).limit(10000)
 
-        // const traces = await Trace.find({ time: { $gt: }})
+        state.intervalId = setInterval(() => {
+          state.currentTime += 0.1
 
-        state.intervalId = setInterval(() => {}, 1e3)
+          if (state.currentTs) {
+            state.currentTs += 100
+          }
+
+          // console.log(state.currentTime.toFixed(0), new Date(state.currentTs))
+
+          const split = splits.reduce((acc, cur) => {
+            if (state.currentTime > cur.sec) {
+              return cur
+            }
+            return acc
+          }, null)
+
+          if (!split) { return }
+
+          if (!state.currentSplit || split.sec !== state.currentSplit.sec) {
+            state.currentSplit = split
+            state.currentTs = split.ts
+            state.traces = state.traces.filter(t => t.time > split.ts)
+          }
+
+          if (state.traces.length >= 2 && state.traces[1].time <= state.currentTs) {
+            state.currentTrace = state.traces.shift()
+            console.log('new trace', state.currentTrace)
+          }
+
+        }, 100)
       }
 
       if (type === 'trace') {
