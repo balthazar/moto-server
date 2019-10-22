@@ -4,7 +4,8 @@
   "description": "",
   "scripts": {
     "server": "node -r esm -r dotenv/config src/server",
-    "client": "node -r esm -r dotenv/config src/client"
+    "client": "node -r esm -r dotenv/config src/client",
+    "deploy": "pm2 deploy ecosystem.json5 production"
   },
   "dependencies": {
     "dotenv": "^7.0.0",
