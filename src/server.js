@@ -114,7 +114,7 @@ wss.on('connection', socket => {
           })
           .filter(s => s.ts)
 
-        state.traces = await Trace.find({ time: { $gte: splits[0].ts  }}).limit(10000)
+        state.traces = await Trace.find({ time: { $gte: splits[0].ts } }).limit(10000)
 
         state.intervalId = setInterval(() => {
           state.currentTime += 0.1
@@ -123,8 +123,6 @@ wss.on('connection', socket => {
             state.currentTs += 100
           }
 
-          // console.log(state.currentTime.toFixed(0), new Date(state.currentTs))
-
           const split = splits.reduce((acc, cur) => {
             if (state.currentTime > cur.sec) {
               return cur
@@ -132,7 +130,9 @@ wss.on('connection', socket => {
             return acc
           }, null)
 
-          if (!split) { return }
+          if (!split) {
+            return
+          }
 
           if (!state.currentSplit || split.sec !== state.currentSplit.sec) {
             state.currentSplit = split
@@ -142,9 +142,8 @@ wss.on('connection', socket => {
 
           if (state.traces.length >= 2 && state.traces[1].time <= state.currentTs) {
             state.currentTrace = state.traces.shift()
-            console.log('new trace', state.currentTrace)
+            wss.broadcast({ type: 'replay', data: state.currentTrace })
           }
-
         }, 100)
       }
 
