@@ -142,7 +142,7 @@ wss.on('connection', socket => {
 
           if (state.traces.length >= 2 && state.traces[1].time <= state.currentTs) {
             state.currentTrace = state.traces.shift()
-            wss.broadcast({ type: 'replay', data: state.currentTrace })
+            wss.broadcast(JSON.stringify({ type: 'replay', data: state.currentTrace }))
           }
         }, 100)
       }
