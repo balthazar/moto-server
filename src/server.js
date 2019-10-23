@@ -115,6 +115,7 @@ wss.on('connection', socket => {
         clearInterval(state.intervalId)
         state.currentTime = null
         state.currentTrace = null
+        state.currentTs = null
         state.paused = false
         state.traces = []
       }
@@ -125,6 +126,7 @@ wss.on('connection', socket => {
         clearInterval(state.intervalId)
         state.currentTime = null
         state.currentTrace = null
+        state.currentTs = null
         state.paused = false
 
         const splits = data.value
