@@ -109,6 +109,16 @@ wss.on('connection', socket => {
         state.paused = false
       }
 
+      if (type === 'stop') {
+        wss.broadcast(JSON.stringify({ type: 'reset' }))
+
+        clearInterval(state.intervalId)
+        state.currentTime = null
+        state.currentTrace = null
+        state.paused = false
+        state.traces = []
+      }
+
       if (type === 'bootstrap') {
         wss.broadcast(JSON.stringify({ type: 'reset' }))
 
