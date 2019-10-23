@@ -110,13 +110,8 @@ wss.on('connection', socket => {
       }
 
       if (type === 'stop') {
-        wss.broadcast(JSON.stringify({ type: 'reset' }))
-
         clearInterval(state.intervalId)
-        state.currentTime = null
-        state.currentTrace = null
-        state.currentTs = null
-        state.paused = false
+        wss.broadcast(JSON.stringify({ type: 'reset' }))
         state.traces = []
       }
 
@@ -127,6 +122,7 @@ wss.on('connection', socket => {
         state.currentTime = null
         state.currentTrace = null
         state.currentTs = null
+        state.currentSplit = null
         state.paused = false
 
         const splits = data.value
