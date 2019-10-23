@@ -42,6 +42,7 @@ const state = {
   currentTs: null,
   currentTrace: null,
   currentSplit: null,
+  paused: false,
 }
 
 wss.on('connection', socket => {
@@ -100,10 +101,21 @@ wss.on('connection', socket => {
         return
       }
 
+      if (type === 'pause') {
+        state.paused = true
+      }
+
+      if (type === 'play') {
+        state.paused = false
+      }
+
       if (type === 'bootstrap') {
+        wss.broadcast(JSON.stringify({ type: 'reset' }))
+
         clearInterval(state.intervalId)
-        state.currentTime = 710 || null
+        state.currentTime = null
         state.currentTrace = null
+        state.paused = false
 
         const splits = data.value
           .trim()
@@ -117,6 +129,10 @@ wss.on('connection', socket => {
         state.traces = await Trace.find({ time: { $gte: splits[0].ts } }).limit(10000)
 
         state.intervalId = setInterval(() => {
+          if (state.paused) {
+            return
+          }
+
           state.currentTime += 0.1
 
           if (state.currentTs) {
