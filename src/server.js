@@ -109,6 +109,11 @@ wss.on('connection', socket => {
         state.paused = false
       }
 
+      if (type === 'forward') {
+        state.currentTime += 10
+        state.currentTs += 10000
+      }
+
       if (type === 'stop') {
         clearInterval(state.intervalId)
         wss.broadcast(JSON.stringify({ type: 'reset' }))
