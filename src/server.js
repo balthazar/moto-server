@@ -61,44 +61,13 @@ wss.on('connection', socket => {
         return
       }
 
-      if (type === 'getChatters') {
-        const fet = await fetch('https://tmi.twitch.tv/group/user/sneakware/chatters')
-        const json = await fet.json()
-
-        const users = Object.keys(json.chatters)
-          .reduce((acc, cur) => acc.concat(json.chatters[cur]), [])
-          .filter(u => u !== 'streamlabs' && u !== 'sneakware')
-
-        //   const circle = turf.circle([last.lon, last.lat], 1000, { steps: 10, units: 'meters' })
-        //   const box = turf.bbox(circle)
-
-        //   const update = {}
-
-        //   users.push('sneakware')
-
-        //   for (let i = 0; i < users.length; ++i) {
-        //     const name = users[i]
-        //     if (usersCache[name]) {
-        //       continue
-        //     }
-
-        //     const userRes = await fetch(`https://api.twitch.tv/helix/users?login=${name}`, {
-        //       headers: {
-        //         'Client-ID': 'z777edtct5ksb29wzc7la89udg02gk',
-        //       },
-        //     })
-
-        //     const user = (await userRes.json()).data[0]
-        //     const coordinates = turf.randomPosition(box)
-
-        //     usersCache[name] = true
-        //     update[name] = { ...user, coordinates }
-
-        socket.send({ type: 'chatters', data: users })
-      }
-
       if (!socket.isAuthenticated) {
         return
+      }
+
+      if (type === 'getTraces') {
+        const traces = await Traces.find()
+        socket.send(JSON.stringify({ type: 'traces', data: traces }))
       }
 
       if (type === 'pause') {
