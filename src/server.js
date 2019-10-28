@@ -66,7 +66,7 @@ wss.on('connection', socket => {
       }
 
       if (type === 'getTraces') {
-        const traces = await Traces.find()
+        const traces = await Trace.find()
         socket.send(JSON.stringify({ type: 'traces', data: traces }))
       }
 
