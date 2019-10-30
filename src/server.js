@@ -13,13 +13,25 @@ mongoose.Promise = Promise
 
 const port = 4040
 
+const requestHandler = async (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+	res.setHeader('Access-Control-Request-Method', '*');
+	res.setHeader('Access-Control-Allow-Methods', 'OPTIONS, GET');
+	res.setHeader('Access-Control-Allow-Headers', '*');
+
+  const traces = (await Trace.find().sort({ _id: -1 }).lean())
+    .map(t => ({ ...t, time: new Date(t.time).getTime() }))
+
+  res.end(JSON.stringify(traces))
+}
+
 const server =
   process.env.NODE_ENV === 'production'
     ? https.createServer({
         cert: fs.readFileSync('/etc/letsencrypt/live/balthazargronon.com/fullchain.pem'),
         key: fs.readFileSync('/etc/letsencrypt/live/balthazargronon.com/privkey.pem'),
-      })
-    : http.createServer()
+    }, requestHandler)
+    : http.createServer(requestHandler)
 
 const wss = new WebSocket.Server({ server })
 
@@ -63,11 +75,6 @@ wss.on('connection', socket => {
 
       if (!socket.isAuthenticated) {
         return
-      }
-
-      if (type === 'getTraces') {
-        const traces = await Trace.find()
-        socket.send(JSON.stringify({ type: 'traces', data: traces }))
       }
 
       if (type === 'pause') {
